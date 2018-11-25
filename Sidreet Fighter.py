@@ -91,11 +91,6 @@ class character:
 				self.lock = False
 
 
-		elif self.left or self.right:
-		
-			screen.blit(self.walk[self.walkCount],(self.x,self.y)) 
-			self.walkCount += 1
-
 		elif self.bdash:
 			for i in range(3):
 				screen.blit(self.backdash[i],(self.x,self.y))
@@ -120,12 +115,19 @@ class character:
 				
 			self.jumpCount += 1
 			if self.jumpCount < 0:
-				self.y -= (self.jumpCount**2) * 0.4
+				self.y -= (self.jumpCount**2) * 0.2
 			else:
-				self.y += (self.jumpCount**2) * 0.4
+				self.y += (self.jumpCount**2) * 0.2
 			if self.jumpCount == 9:
 				self.jumpCount = -10
 				self.isJump = False
+
+		elif self.left or self.right:
+		
+			screen.blit(self.walk[self.walkCount],(self.x,self.y)) 
+			
+			self.walkCount += 1
+
 
 			
 		elif not self.punch:
@@ -142,7 +144,7 @@ player1 = character()
 
 while not done:
 
-	clock.tick(10)
+	clock.tick(15)
 
 	for event in pygame.event.get():
 		if event.type==pygame.QUIT:
@@ -150,6 +152,9 @@ while not done:
 		
 	keys = pygame.key.get_pressed()	
 	
+	if keys[pygame.K_SPACE] and not player1.isJump:
+		player1.isJump = True
+
 	#light attack b
 	if keys[pygame.K_b] and not player1.lock:
 	
@@ -170,7 +175,9 @@ while not done:
 	if keys[pygame.K_n] and not player1.lock:
 		player1.lock = True
 		player1.heavy = True
-		
+
+	
+
 			
 
 	#move Left 
@@ -196,6 +203,7 @@ while not done:
 									
 	#move right
 	elif keys[pygame.K_RIGHT] and player1.x < 640 - player1.width - player1.speed and not player1.lock:
+
 	
 		if player1.isJump:
 			player1.x += player1.speed
@@ -209,20 +217,19 @@ while not done:
 			else:
 				player1.timer = 0
 				player1.x += player1.speed
+
 				player1.right = True
 				player1.left = False
 
-
-	if keys[pygame.K_SPACE] and not player1.isJump:
-		player1.isJump = True
-
-
-
+	
 
 	else:
 		player1.right = False
 		player1.left = False
 		player1.walkCount = 0
+
+
+
 	if player1.startTimer:
 		player1.timer += 1
 	if player1.startPunchTimer:
